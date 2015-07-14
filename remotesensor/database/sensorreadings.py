@@ -53,9 +53,21 @@ class SensorReadingWriter(MongoDBWriter):
     '''
     def findBySensor(self, sensorid):
         table = self.client[self._dbname][self._collectionname]
-        for row in table.find({"_id.sensorid":sensorid}).sort("dt" ): 
-            print row
+        docs = []
+        for row in table.find({"sensorid":sensorid}).sort("createdTime" ).limit(100): 
+            row['createdTime'] = row['createdTime'].strftime('%Y-%m-%dT%H:%M:%SZ')
+            row['_id'] =  str(row['_id'])
+            docs.append(row)
+        return docs
 
+    
+    def saveReading(self, sensorid, temperature):
+        doc = {}
+        doc['sensorid'] = sensorid
+        doc['temperature'] = temperature        
+        doc['createdTime'] = datetime.now()
+        self.saveToDb([doc])
+        
 if __name__ == '__main__':
     '''
     sw = SensorReadingWriter()
@@ -73,8 +85,10 @@ if __name__ == '__main__':
     s.installedTime  = datetime.now()
     s.activatedTime  = datetime.now()
     s.currenStatus = 'ACTIVE'
-    sm = SensorManagement()
-    #sm.registerSensor(s)
+    #sm = SensorManagement(hostname='54.85.111.126')
+    #sm.registerSensor(s)x
     #sm.findAll()
-    sm.findByCustomer(22222)
-    
+    #sm.findByCustomer(22222)
+    srw = SensorReadingWriter(hostname='54.85.111.126')
+    #srw.saveReading(11112, 88.22 )
+    print srw.findBySensor(123122)
