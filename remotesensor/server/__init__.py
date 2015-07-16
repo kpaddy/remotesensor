@@ -1,6 +1,7 @@
 import tornado.ioloop
 import tornado.web
 from remotesensor.database.sensorreadings import SensorReadingWriter
+from remotesensor.database.outsidereadings import OusideReadingWriter
 import json 
 import logging
 import traceback
@@ -16,7 +17,27 @@ class MainHandler(tornado.web.RequestHandler):
         self.send_error(404)
     def post(self):
         self.send_error(404)
-
+class ApiHandler(tornado.web.RequestHandler):
+    def __init__(self, application, request, **kwargs):
+        tornado.web.RequestHandler.__init__(self, application, request, **kwargs)
+        logger.debug('Initalizing API Handler and connecting to mongo at localhost ')
+        self._orw = OusideReadingWriter()
+        #self._orw = OusideReadingWriter(hostname='54.85.111.126')
+    def get(self):
+        zipcode = self.get_argument("zipcode", None)
+        print 'inside get ',zipcode
+        if zipcode :
+            #res = []
+            #for r in self._orw.findByZip(zipcode):
+            #    res.append({'zipcode':r['zipcode'], 'name':r['name'], 'temp':r['main']['temp']})
+            self.write(tornado.escape.json_encode(self._orw.findByZip(zipcode)))
+        else:
+            self.set_status(500)
+            self.write('INVALID REQUEST')
+    def post(self):
+        self.set_status(500)
+        self.write('INVALID REQUEST')
+        
 class SensorHandler(tornado.web.RequestHandler):
     def __init__(self, application, request, **kwargs):
         tornado.web.RequestHandler.__init__(self, application, request, **kwargs)
@@ -57,7 +78,13 @@ class SensorHandler(tornado.web.RequestHandler):
         logger.debug( "saved Temperature" + str(data_json) )
         self.write('SUCCESS')
         
-application = tornado.web.Application([ (r"/", MainHandler), (r"/sensor", SensorHandler) ])
+application = tornado.web.Application([ (r"/sensor", SensorHandler),  
+                                       (r"/api", ApiHandler),  
+                                       (r'/js/(.*)', tornado.web.StaticFileHandler, {'path': "/Apps/workspaces_merge/remotesensor/remotesensor/webapp/ChartFiles/js"}), 
+                                       (r'/css/(.*)', tornado.web.StaticFileHandler, {'path': "/Apps/workspaces_merge/remotesensor/remotesensor/webapp/ChartFiles/css"}), 
+                                       (r'/(.*)', tornado.web.StaticFileHandler, {'path': "/Apps/workspaces_merge/remotesensor/remotesensor/webapp"}), ])
+#application = tornado.web.Application([ (r"/", MainHandler), (r"/sensor", SensorHandler),  (r'/chart/(.*)', tornado.web.StaticFileHandler, {'path': "/Apps/workspaces_merge/remotesensor/remotesensor/webapp"}),])
+#                                       
 
 if __name__ == "__main__":
     port = 12000

@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="en">
+
+  <head>
+    <script src="/js/angular.js"></script>
+    <script src="/js/jquery-2.0.3.min.js"></script>
+    <script src="/js/highcharts.js"></script>
+    <script src="/js/ChartMain.js"></script>
+    <script src="/js/Controllers/ChartCtrl.js"></script>
+    <script src="/js/Directives/ChartDirective.js"></script>
+    <link rel="stylesheet" type="text/css" href="/css/Style.css">   
+  </head>
+
+  <body ng-app="app">
+    <div ng-controller="ChartCtrl"> 
+      <div>
+        <chart ng-repeat="config in configs" config="config" class="duelChart"></chart>
+      </div>        
+    </div>
+  </body>
+</html>

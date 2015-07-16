@@ -34,9 +34,11 @@ class OusideReadingWriter(MongoDBWriter):
     def findByZip(self, zipcode):
         table = self.client[self._dbname][self._collectionname]
         print self._dbname, self._collectionname
+        res = []
         for row in table.find({"_id.zipcode":zipcode}).sort("dt" ): 
-            print row
-
+            res.append(row)
+            #print row
+        return res
 
 newrecords = [{'zipcode':'19426', 'timestamp':'', 'temperature':94.33 }, 
               {'zipcode':'19422', 'timestamp':'', 'temperature':93.33 }
@@ -57,6 +59,7 @@ class TemperatureReader(object):
         for zipcode in zipcodes:
             temps.append(self.getCurrentTempAtZipcode(zipcode))
         return temps
+'''
 while True:
     try:
         print 'Current time: ', datetime.now()
@@ -71,5 +74,7 @@ while True:
         print sys.exc_info()
         print 'going to sleep for 30 minutes'
         time.sleep(30*60)
+'''
 #dbwriter = OusideReadingWriter()
 #dbwriter.findByZip( "19426")
+#print temps
