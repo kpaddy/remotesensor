@@ -1,0 +1,38 @@
+<!doctype html>
+<html lang="en" ng-app="myApp">
+<head>
+  <meta charset="utf-8">
+  <title>Remote Sensor App</title>
+  <link rel="stylesheet" href="css/app.css"/>
+  <script src="js/oauth.js"></script>
+</head>
+<body>
+  <div ng-view></div>
+  <!-- In production use:
+  <script src="//ajax.googleapis.com/ajax/libs/angularjs/1.0.7/angular.min.js"></script>
+  -->
+  <script src="lib/angular/angular.js"></script>
+  <script src="lib/angular/angular-route.js"></script>
+  <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.2.27/angular.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/angular-ui-router/0.2.13/angular-ui-router.min.js"></script>
+        
+
+  <script src="js/app.js"></script>
+
+  <script src="js/directives/loginDrc.js"></script>
+  <script src="js/directives/registerDrc.js"></script>
+  <script src="js/directives/sensorDrc.js"></script>
+
+  <script src="js/controllers/loginCtrl.js"></script>
+  <script src="js/controllers/homeCtrl.js"></script>
+  <script src="js/controllers/registerCtrl.js"></script>
+  <script src="js/controllers/sensorCtrl.js"></script>
+  <script src="js/controllers/twitterCtrl.js"></script>
+  
+  <script src="js/services/loginService.js"></script>
+  <script src="js/services/sessionService.js"></script>
+  <script src="js/services/registerService.js"></script>
+  <script src="js/services/sensorService.js"></script>
+  <script src="js/services/oauthService.js"></script>
+</body>
+</html>
