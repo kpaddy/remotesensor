@@ -1,0 +1,40 @@
+<div id="main-container">
+    <div id="main">
+        <h1>
+            <img alt="Remote Sensor Application" src="">
+        </h1>
+
+        <div id="login-form">
+            <form action="/auth/login/" method="post" id="login_form">
+                <h2>Admin Login</h2>
+                <span class="errormessage">{{errormessage}}</span>
+
+                <div>
+                    <label for="username">Username: </label>
+                    <input autocapitalize="off" autocorrect="off" class="text-input" id="username"
+                           name="username" tabindex="1" type="text" value="">
+                </div>
+                <br>
+
+                <div>
+                    <label for="password">Password: </label>
+                    <input class="text-input" id="password" name="password" tabindex="2" type="password"
+                           value="">
+                </div>
+
+                <br>
+                <div id="form_btn">
+                    <input id="signin-btn" class="btn btn-blue" type="submit" value="Sign In" tabindex="3">
+                </div>
+            </form>
+        </div>
+        <br/>
+
+        <div class="col-xs-6">
+            <button id="connectButton" type="button" class="btn btn-primary">Connect Twitter</button>
+            <button id="signOut" type="button" class="btn btn-link" style="display:none;">Twitter Sign Out
+            </button>
+        </div>
+        <br/>
+    </div>
+</div>
