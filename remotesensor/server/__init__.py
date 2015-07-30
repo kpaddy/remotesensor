@@ -32,6 +32,7 @@ class Application(tornado.web.Application):
             (r"/", MainHandler),
             (r"/auth/login/", LoginHandler),
             (r"/auth/logout/", LogoutHandler),
+            (r"/sensor/register/", SensorRegistrationHandler),
             (r"/api", ApiHandler),
             (r'/js/(.*)', tornado.web.StaticFileHandler,
              {'path': "/Apps/workspaces_merge/remotesensor/remotesensor/webapp/js"}),
@@ -40,7 +41,6 @@ class Application(tornado.web.Application):
             (r"/(.*)", tornado.web.StaticFileHandler,
              {'path': "/Users/nthomas/Projects/remotesensor/remotesensor/webapp/"}),
             (r"/auth/twitter/?", TwitterLoginHandler),
-            (r"/logout", LogoutHandler),
             (r"/images/(.*)", tornado.web.StaticFileHandler,
              {'path': "/Users/nthomas/Projects/remotesensor/remotesensor/webapp/images"})
             # (r"/partials/(.*)", tornado.web.StaticFileHandler,
@@ -110,7 +110,7 @@ class LoginHandler(MainHandler):
         auth = self.check_permission(password, username)
         if auth:
             self.set_current_user(username)
-            self.set_secure_cookie("user", username)
+            self.set_secure_cookie("user", self.get_argument("username", ""))
             self.redirect("/partials/home.html")
         else:
             error_msg = u"?error=" + tornado.escape.url_escape("Login incorrect")
@@ -184,6 +184,17 @@ class LogoutHandler(MainHandler):
         self.clear_cookie("access_token_secret")
         self.redirect("/home.html")
 
+
+class SensorRegistrationHandler(MainHandler):
+    def get(self):
+        try:
+            errormessage = self.get_argument("error")
+        except:
+            errormessage = ""
+        self.render('/partials/login.html', errormessage = errormessage)
+
+    def post(self):
+        return True
 
 class SensorHandler(tornado.web.RequestHandler):
     def __init__(self, application, request, **kwargs):
