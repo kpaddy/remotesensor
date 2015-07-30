@@ -176,13 +176,13 @@ class TwitterLoginHandler(tornado.web.RequestHandler,
 
 class LogoutHandler(MainHandler):
     def get(self):
-        # This logs the user out of this app, but does not log them
-        # out of Twitter.
+        # This logs the user out of this app, but does not log them out of Twitter.
+        self.clear_cookie("user")
         self.clear_cookie("screen_name")
         self.clear_cookie("user_id")
         self.clear_cookie("access_token_key")
         self.clear_cookie("access_token_secret")
-        self.redirect("/partials/home.html")
+        self.redirect("/home.html")
 
 
 class SensorHandler(tornado.web.RequestHandler):
