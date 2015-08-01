@@ -9,7 +9,9 @@ import traceback
 import pymongo
 import twitter
 import oauth2 as oauth
+import datetime
 from tornado.options import define, options, parse_command_line
+from remotesensor.database import MongoDBWriter
 from remotesensor.database.sensorreadings import SensorReadingWriter
 from remotesensor.database.outsidereadings import OusideReadingWriter
 from remotesensor.database.userdb import UserDB
@@ -64,13 +66,13 @@ class Application(tornado.web.Application):
         }
 
         tornado.web.Application.__init__(self, handlers, **settings)
-        # try:
-        #     self.con = Connection(host="localhost",port=27017)
-        #     print "Connected Successfully"
-        # except ConnectionFailure, e:
-        #     sys.stderr.write("Could not connect to MongoDB: %s"%e)
-        # self.db = self.con["user"]
-        # assert self.db.connection==self.con
+        ''' try:
+            self.con = pymongo.Connection(host="localhost", port=27017)
+            print "Connected Successfully"
+        except ConnectionFailure, e:
+            sys.stderr.write("Could not connect to MongoDB: %s"%e)
+        self.db = self.con["user"]
+        assert self.db.connection==self.con '''
 
 
 class MainHandler(tornado.web.RequestHandler):
@@ -152,26 +154,19 @@ class TwitterLoginHandler(tornado.web.RequestHandler,
 
     @tornado.web.asynchronous
     def get(self):
-        print 'In GET'
         if self.get_argument("oauth_token", None):
-            print 'GET OK'
-            # self.get_authenticated_user(self.async_callback(self._on_auth))
             self.get_authenticated_user(callback=self._on_auth)
             return
-        print 'REDIRECT'
         self.authenticate_redirect()
 
     @tornado.web.asynchronous
     def _on_auth(self, user):
-        print 'ONAUTH'
         if not user:
-            print 'Broken'
             raise tornado.web.HTTPError(500, "Twitter auth failed")
 
-        print 'not Broken'
         # Saving user information to secure cookies
-        self.set_cookie('screen_name', user['access_token']['screen_name'])
-        self.set_cookie('user_id', user['access_token']['user_id'])
+        self.set_secure_cookie('screen_name', user['access_token']['screen_name'])
+        self.set_secure_cookie('user_id', user['access_token']['user_id'])
         self.set_secure_cookie('access_token_key', user['access_token']['key'])
         self.set_secure_cookie('access_token_secret', user['access_token']['secret'])
 
@@ -179,9 +174,15 @@ class TwitterLoginHandler(tornado.web.RequestHandler,
 
         # On successful authentication, check for valid user and then redirect to homepage
         #if self.db.users.find_one({"screen_name": user["screen_name"]}):
-        self.redirect("/partials/home.html")
-        #else:
-        #    self.redirect('/partials/login.html')
+        client = pymongo.MongoClient('localhost', 27017)
+        user_db = client.user
+        users = user_db.users
+        if users.find_one({"screen_name": user['access_token']['screen_name']}):
+            logger.debug("Found valid user")
+            self.redirect("/partials/home.html")
+        else:
+            logger.debug("No valid user found")
+            self.redirect('/partials/login.html')
 
 
 class LogoutHandler(MainHandler):
