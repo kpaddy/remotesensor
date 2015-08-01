@@ -3,19 +3,15 @@ import tornado.web
 import tornado.auth
 import tornado.httpserver
 import json
-import sys
 import logging
 import traceback
 import pymongo
-import twitter
-import oauth2 as oauth
-import datetime
+from datetime import datetime
 from tornado.options import define, options, parse_command_line
 from remotesensor.database import MongoDBWriter
 from remotesensor.database.sensorreadings import SensorReadingWriter
 from remotesensor.database.outsidereadings import OusideReadingWriter
 from remotesensor.database.userdb import UserDB
-# from pymongo import Connection
 from pymongo.errors import ConnectionFailure
 # logging.basicConfig(filename='/var/log/sensors/server.log',level=logging.DEBUG)
 formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
@@ -44,15 +40,15 @@ class Application(tornado.web.Application):
             (r"/sensor/register/", SensorRegistrationHandler),
             (r"/api", ApiHandler),
             (r'/js/(.*)', tornado.web.StaticFileHandler,
-             {'path': "/Apps/workspaces_merge/remotesensor/remotesensor/webapp/js"}),
+             {'path': "/Users/nthomas/Projects/remotesensor/remotesensor/webapp/ChartFiles/js"}),
             (r'/css/(.*)', tornado.web.StaticFileHandler,
-             {'path': "/Apps/workspaces_merge/remotesensor/remotesensor/webapp/css"}),
+             {'path': "/Users/nthomas/Projects/remotesensor/remotesensor/webapp/ChartFiles/css"}),
+            (r"/sensor/view/", tornado.web.StaticFileHandler,
+             {'path': "/Users/nthomas/Projects/remotesensor/remotesensor/webapp/Chart.html"}),
             (r"/(.*)", tornado.web.StaticFileHandler,
              {'path': "/Users/nthomas/Projects/remotesensor/remotesensor/webapp/"}),
             (r"/images/(.*)", tornado.web.StaticFileHandler,
              {'path': "/Users/nthomas/Projects/remotesensor/remotesensor/webapp/images"})
-            # (r"/partials/(.*)", tornado.web.StaticFileHandler,
-            # {'path': "/Users/nthomas/Projects/remotesensor/remotesensor/webapp/partials"})
         ]
         settings = {
             "twitter_consumer_key": "B4LoarSuMS3Ltsex8TxBqjW8V",
@@ -173,12 +169,16 @@ class TwitterLoginHandler(tornado.web.RequestHandler,
         logger.debug('Initalizing Sensor Handler and connecting to mongo at localhost ')
 
         # On successful authentication, check for valid user and then redirect to homepage
-        #if self.db.users.find_one({"screen_name": user["screen_name"]}):
+        # Also saves the current datetime of login
         client = pymongo.MongoClient('localhost', 27017)
         user_db = client.user
         users = user_db.users
         if users.find_one({"screen_name": user['access_token']['screen_name']}):
             logger.debug("Found valid user")
+            user_log_record = {"screen_name": user['access_token']['screen_name'],
+                               "login_time": datetime.now()}
+            user_log = user_db.user_log
+            user_log.insert(user_log_record)
             self.redirect("/partials/home.html")
         else:
             logger.debug("No valid user found")
@@ -253,12 +253,6 @@ class SensorHandler(tornado.web.RequestHandler):
 if __name__ == "__main__":
     parse_command_line()
     http_server = tornado.httpserver.HTTPServer(Application())
-
-    #MongoDB
-    http_server.mongo = pymongo.MongoClient(
-        host=mongodb_options["host"],
-        port=mongodb_options["port"]
-    )[mongodb_options["db"]]
 
     http_server.listen(options.port)
     print 'starting at port: ', options.port
