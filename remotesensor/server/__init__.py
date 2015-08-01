@@ -14,6 +14,7 @@ from remotesensor.database.outsidereadings import OusideReadingWriter
 from remotesensor.database.userdb import UserDB
 from pymongo.errors import ConnectionFailure
 # logging.basicConfig(filename='/var/log/sensors/server.log',level=logging.DEBUG)
+
 formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
 ch = logging.StreamHandler()
 ch.setFormatter(formatter)
@@ -37,6 +38,7 @@ class Application(tornado.web.Application):
             (r"/auth/login/", LoginHandler),
             (r"/auth/logout/", LogoutHandler),
             (r"/auth/twitter/", TwitterLoginHandler),
+            (r"/user/register/", UserRegistrationHandler),
             (r"/sensor/register/", SensorRegistrationHandler),
             (r"/api", ApiHandler),
             (r'/js/(.*)', tornado.web.StaticFileHandler,
@@ -114,7 +116,7 @@ class LoginHandler(MainHandler):
         auth = self.check_permission(password, username)
         if auth:
             self.set_current_user(username)
-            self.set_secure_cookie("user", self.get_argument("username", ""))
+            self.set_cookie("user", self.get_argument("username", ""))
             self.redirect("/partials/home.html")
         else:
             error_msg = u"?error=" + tornado.escape.url_escape("Login incorrect")
@@ -196,6 +198,32 @@ class LogoutHandler(MainHandler):
         self.redirect("/home.html")
 
 
+class UserRegistrationHandler(MainHandler):
+    def post(self):
+        screen_name = self.get_argument("screen_name", "")
+        name = self.get_argument("name", "")
+        client = pymongo.MongoClient('localhost', 27017)
+        user_db = client.user
+        users = user_db.users
+        if users.find_one({"screen_name": screen_name}):
+            logger.debug("Error: Existing user")
+            self.render('/partials/register_user.html', errormessage = "Error: Existing user")
+        else:
+            new_user = {"screen_name": screen_name,
+                    "name": name,
+                    "profile_image_url" : "",
+                    "created_date": datetime.now()}
+            users.insert(new_user)
+            print "Added new user"
+            self.redirect("/partials/register_user.html")
+
+    def get(self):
+        try:
+            errormessage = self.get_argument("error")
+        except:
+            errormessage = ""
+        self.render('/partials/register_user.html', errormessage = errormessage)
+
 class SensorRegistrationHandler(MainHandler):
     def get(self):
         try:
@@ -248,6 +276,34 @@ class SensorHandler(tornado.web.RequestHandler):
             return
         logger.debug("saved Temperature" + str(data_json))
         self.write('SUCCESS')
+
+
+class SensorRegistrationHandler(MainHandler):
+    def post(self):
+        sensor_name = self.get_argument("sensor_name", "")
+        location = self.get_argument("location", "")
+        client = pymongo.MongoClient('localhost', 27017)
+        sensor_db = client.sensor
+        sensor_collection = sensor_db.sensor
+        if sensor_collection.find_one({"sensor_name": sensor_name, "location": location}):
+            logger.debug("Error: Existing sensor")
+            self.render('/partials/register_sensor.html', errormessage = "Error: Existing sensor")
+        else:
+            new_sensor = {"sensor_name": sensor_name,
+                    "location": location,
+                    "added_by" : self.get_cookie("user"),
+                    "current_status": "Active",
+                    "added_date": datetime.now()}
+            sensor_collection.insert(new_sensor)
+            print "Added new sensor"
+            self.redirect("/partials/register_sensor.html")
+
+    def get(self):
+        try:
+            errormessage = self.get_argument("error")
+        except:
+            errormessage = ""
+        self.render('/partials/register_user.html', errormessage = errormessage)
 
 
 if __name__ == "__main__":

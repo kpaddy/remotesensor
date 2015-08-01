@@ -1,0 +1,35 @@
+<div id="main-container">
+    <div id="main">
+        <h1>
+            <img alt="New User Registration" src="">
+        </h1>
+
+        <div id="login-form">
+            <form action="/user/register/" method="post" id="register_user_form">
+                <span class="errormessage">{{errormessage}}</span>
+                <div>
+                    <label for="screen_name">Twitter Screen Name: </label>
+                    <input autocapitalize="off" autocorrect="off" class="text-input" id="screen_name"
+                           name="screen_name" tabindex="1" type="text" value="">
+                </div>
+                <br>
+
+                <div>
+                    <label for="name">Name: </label>
+                    <input class="text-input" id="name" name="name" tabindex="2" type="text"
+                           value="">
+                </div>
+
+                <br>
+
+                <div id="form_btn">
+                    <input id="signin-btn" class="btn btn-blue" type="submit" value="Add User" tabindex="3">
+                </div>
+            </form>
+        </div>
+        <br/>
+        <div>
+            <a href="/partials/home.html">Home Page</a>
+        </div>
+    </div>
+</div>
