@@ -7,6 +7,8 @@ import sys
 import logging
 import traceback
 import pymongo
+import twitter
+import oauth2 as oauth
 from tornado.options import define, options, parse_command_line
 from remotesensor.database.sensorreadings import SensorReadingWriter
 from remotesensor.database.outsidereadings import OusideReadingWriter
@@ -21,7 +23,11 @@ logger = logging.getLogger(__name__)
 logger.addHandler(ch)
 
 define("port", default=12000, help="Run on the given port", type=int)
-
+mongodb_options = {
+    "host": "localhost",
+    "port": 27017,
+    "db": "user"
+}
 
 class Application(tornado.web.Application):
     # This portion of the application gets used to startup the settings,
@@ -32,6 +38,7 @@ class Application(tornado.web.Application):
             (r"/", MainHandler),
             (r"/auth/login/", LoginHandler),
             (r"/auth/logout/", LogoutHandler),
+            (r"/auth/twitter/", TwitterLoginHandler),
             (r"/sensor/register/", SensorRegistrationHandler),
             (r"/api", ApiHandler),
             (r'/js/(.*)', tornado.web.StaticFileHandler,
@@ -40,7 +47,6 @@ class Application(tornado.web.Application):
              {'path': "/Apps/workspaces_merge/remotesensor/remotesensor/webapp/css"}),
             (r"/(.*)", tornado.web.StaticFileHandler,
              {'path': "/Users/nthomas/Projects/remotesensor/remotesensor/webapp/"}),
-            (r"/auth/twitter/?", TwitterLoginHandler),
             (r"/images/(.*)", tornado.web.StaticFileHandler,
              {'path': "/Users/nthomas/Projects/remotesensor/remotesensor/webapp/images"})
             # (r"/partials/(.*)", tornado.web.StaticFileHandler,
@@ -59,12 +65,12 @@ class Application(tornado.web.Application):
 
         tornado.web.Application.__init__(self, handlers, **settings)
         # try:
-        # self.con = Connection(host="localhost",port=27017)
+        #     self.con = Connection(host="localhost",port=27017)
         #     print "Connected Successfully"
         # except ConnectionFailure, e:
-        #     sys.stderr.write("Could not connect to MongoDB: %s" %e)
+        #     sys.stderr.write("Could not connect to MongoDB: %s"%e)
         # self.db = self.con["user"]
-        # assert self.db.connection == self.con
+        # assert self.db.connection==self.con
 
 
 class MainHandler(tornado.web.RequestHandler):
@@ -145,33 +151,37 @@ class TwitterLoginHandler(tornado.web.RequestHandler,
     #     self._user = UserDB()
 
     @tornado.web.asynchronous
-    @tornado.gen.coroutine
     def get(self):
+        print 'In GET'
         if self.get_argument("oauth_token", None):
-            logging.info('Twitter OAuth - authenticating user' )
-            user = yield self.get_authenticated_user()
-            self.async_callback(self._on_auth(user))
-            # return
-        else:
-            self.authorize_redirect()
+            print 'GET OK'
+            # self.get_authenticated_user(self.async_callback(self._on_auth))
+            self.get_authenticated_user(callback=self._on_auth)
+            return
+        print 'REDIRECT'
+        self.authenticate_redirect()
 
+    @tornado.web.asynchronous
     def _on_auth(self, user):
+        print 'ONAUTH'
         if not user:
+            print 'Broken'
             raise tornado.web.HTTPError(500, "Twitter auth failed")
 
+        print 'not Broken'
         # Saving user information to secure cookies
-        self.set_secure_cookie('screen_name', user['access_token']['screen_name'])
-        self.set_secure_cookie('user_id', user['access_token']['user_id'])
+        self.set_cookie('screen_name', user['access_token']['screen_name'])
+        self.set_cookie('user_id', user['access_token']['user_id'])
         self.set_secure_cookie('access_token_key', user['access_token']['key'])
         self.set_secure_cookie('access_token_secret', user['access_token']['secret'])
 
         logger.debug('Initalizing Sensor Handler and connecting to mongo at localhost ')
 
         # On successful authentication, check for valid user and then redirect to homepage
-        if self.db.users.find_one({"screen_name": user["screen_name"]}):
-            self.redirect('/home')
-        else:
-            self.redirect('/partials/login.html')
+        #if self.db.users.find_one({"screen_name": user["screen_name"]}):
+        self.redirect("/partials/home.html")
+        #else:
+        #    self.redirect('/partials/login.html')
 
 
 class LogoutHandler(MainHandler):
@@ -242,6 +252,13 @@ class SensorHandler(tornado.web.RequestHandler):
 if __name__ == "__main__":
     parse_command_line()
     http_server = tornado.httpserver.HTTPServer(Application())
+
+    #MongoDB
+    http_server.mongo = pymongo.MongoClient(
+        host=mongodb_options["host"],
+        port=mongodb_options["port"]
+    )[mongodb_options["db"]]
+
     http_server.listen(options.port)
     print 'starting at port: ', options.port
     tornado.ioloop.IOLoop.instance().start()

@@ -7,7 +7,7 @@
         <div id="login-form">
             <form action="/auth/login/" method="post" id="login_form">
                 <h2>Admin Login</h2>
-                <span class="errormessage">{{errormessage}}</span>
+                <span class="errormessage">{{ errormessage }}</span>
 
                 <div>
                     <label for="username">Username: </label>
@@ -23,6 +23,7 @@
                 </div>
 
                 <br>
+
                 <div id="form_btn">
                     <input id="signin-btn" class="btn btn-blue" type="submit" value="Sign In" tabindex="3">
                 </div>
@@ -31,7 +32,12 @@
         <br/>
 
         <div class="col-xs-6">
-            <button id="connectButton" type="button" style="background-color:#4099FF" class="btn btn-primary">Twitter Connect</button>
+            <form action="/auth/twitter/" method="get">
+                <div>
+                    <input id="connectButton" class="btn btn-primary" type="submit"
+                           style="background-color:#4099FF" value="Twitter Connect">
+                </div>
+            </form>
             <button id="signOut" type="button" class="btn btn-link" style="display:none;">Twitter Sign Out
             </button>
         </div>
