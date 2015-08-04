@@ -44,7 +44,7 @@ class Application(tornado.web.Application):
             (r'/js/(.*)', tornado.web.StaticFileHandler,
              {'path': "/Users/nthomas/Projects/remotesensor/remotesensor/webapp/ChartFiles/js"}),
             (r'/css/(.*)', tornado.web.StaticFileHandler,
-             {'path': "/Users/nthomas/Projects/remotesensor/remotesensor/webapp/ChartFiles/css"}),
+              {'path': "/Users/nthomas/Projects/remotesensor/remotesensor/webapp/ChartFiles/css"}),
             (r"/sensor/view/", tornado.web.StaticFileHandler,
              {'path': "/Users/nthomas/Projects/remotesensor/remotesensor/webapp/Chart.html"}),
             (r"/(.*)", tornado.web.StaticFileHandler,
@@ -89,8 +89,8 @@ class ApiHandler(tornado.web.RequestHandler):
     def __init__(self, application, request, **kwargs):
         tornado.web.RequestHandler.__init__(self, application, request, **kwargs)
         logger.debug('Initalizing API Handler and connecting to mongo at localhost ')
-        self._orw = OusideReadingWriter()
-        # self._orw = OusideReadingWriter(hostname='54.85.111.126')
+        # self._orw = OusideReadingWriter()
+        self._orw = OusideReadingWriter(hostname='54.85.111.126')
 
     def get(self):
         zipcode = self.get_argument("zipcode", None)
@@ -99,7 +99,10 @@ class ApiHandler(tornado.web.RequestHandler):
             # res = []
             #for r in self._orw.findByZip(zipcode):
             #    res.append({'zipcode':r['zipcode'], 'name':r['name'], 'temp':r['main']['temp']})
+            #results = self._orw.findByZip(zipcode)
+            #print results
             self.write(tornado.escape.json_encode(self._orw.findByZip(zipcode)))
+
         else:
             self.set_status(500)
             self.write('INVALID REQUEST')
@@ -116,7 +119,7 @@ class LoginHandler(MainHandler):
         auth = self.check_permission(password, username)
         if auth:
             self.set_current_user(username)
-            self.set_cookie("user", self.get_argument("username", ""))
+            self.set_cookie("screen_name", self.get_argument("username", ""))
             self.redirect("/partials/home.html")
         else:
             error_msg = u"?error=" + tornado.escape.url_escape("Login incorrect")
@@ -163,8 +166,8 @@ class TwitterLoginHandler(tornado.web.RequestHandler,
             raise tornado.web.HTTPError(500, "Twitter auth failed")
 
         # Saving user information to secure cookies
-        self.set_secure_cookie('screen_name', user['access_token']['screen_name'])
-        self.set_secure_cookie('user_id', user['access_token']['user_id'])
+        self.set_cookie('screen_name', user['access_token']['screen_name'])
+        self.set_cookie('user_id', user['access_token']['user_id'])
         self.set_secure_cookie('access_token_key', user['access_token']['key'])
         self.set_secure_cookie('access_token_secret', user['access_token']['secret'])
 
@@ -280,20 +283,21 @@ class SensorHandler(tornado.web.RequestHandler):
 
 class SensorRegistrationHandler(MainHandler):
     def post(self):
-        sensor_name = self.get_argument("sensor_name", "")
-        location = self.get_argument("location", "")
+        name = self.get_argument("sensor_name", "")
+        zipcode = self.get_argument("location", "")
         client = pymongo.MongoClient('localhost', 27017)
+
         sensor_db = client.sensor
         sensor_collection = sensor_db.sensor
-        if sensor_collection.find_one({"sensor_name": sensor_name, "location": location}):
+        if sensor_collection.find_one({"name": name, "zipcode": zipcode}):
             logger.debug("Error: Existing sensor")
             self.render('/partials/register_sensor.html', errormessage = "Error: Existing sensor")
         else:
-            new_sensor = {"sensor_name": sensor_name,
-                    "location": location,
-                    "added_by" : self.get_cookie("user"),
-                    "current_status": "Active",
-                    "added_date": datetime.now()}
+            new_sensor = {"name": name,
+                    "customerId" : self.get_cookie("screen_name"),
+                    "zipcode": zipcode,
+                    "currentStatus": "ACTIVE",
+                    "installedTime": datetime.now()}
             sensor_collection.insert(new_sensor)
             print "Added new sensor"
             self.redirect("/partials/register_sensor.html")

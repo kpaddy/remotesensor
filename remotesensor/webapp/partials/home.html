@@ -1,3 +1,7 @@
+<head>
+<link rel="stylesheet" type="text/css" href="/css/app.css">
+</head>
+
 <div class="wrap">
 	<h2>Registered User Landing Page</h2>
 	<img ng-src="img/homepage.jpeg" alt=" Home Image" class="center" width="400px;" height="150px;">
@@ -5,10 +9,29 @@
 	<br/>
     <div class="sensors">
         <h2>Sensor Management</h2>
-        <a href="/sensor/view/">View Sensors</a>
-        <a href="/partials/register_sensor.html">Register Sensors</a>
-        <a href="/partials/register_user.html">Register New User</a>
+        <ul>
+            <li style="display:inline">
+        <form action="/sensor/view/">
+                <div>
+                    <input id="view-sensor-button" class="btn btn-primary" type="submit" value="View Sensors">
+                </div>
+            </form>
+</li>
+            <li style="display:inline">
+        <form action="/partials/register_sensor.html" method="get">
+                <div>
+                    <input id="register-sensor-utton" class="btn btn-primary" type="submit" value="Register Sensors">
+                </div>
+            </form>
+</li>
+            <li style="display:inline">
+        <form action="/partials/register_user.html" method="get">
+                <div>
+                    <input id="connectButton" class="btn btn-primary" type="submit" value="Register New User">
+                </div>
+            </form>
+            </li>
+        </ul>
     </div>
-
 	<a href="/auth/logout/" style="float:right">Logout</a>
 </div>

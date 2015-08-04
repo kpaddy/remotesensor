@@ -1,12 +1,12 @@
-<div id="main-container">
-    <div id="main">
-        <h1>
-            <img alt="Remote Sensor Application" src="">
-        </h1>
-
-        <div id="login-form">
-            <form action="/auth/login/" method="post" id="login_form">
-                <h2>Admin Login</h2>
+<head>
+<link rel="stylesheet" type="text/css" href="/css/app.css">
+</head>
+<body>
+<div id="main-container" class="bs-example">
+        <div id="login-form" class="form-group">
+            <form role="form" action="/auth/login/" method="post" id="login_form">
+                <h1>Remote Sensor Application</h1>
+                <h4>Admin Login</h4>
                 <span class="errormessage">{{ errormessage }}</span>
 
                 <div>
@@ -42,5 +42,4 @@
             </button>
         </div>
         <br/>
-    </div>
-</div>
+</div></body>
