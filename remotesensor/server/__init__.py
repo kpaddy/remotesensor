@@ -133,7 +133,7 @@ class LoginHandler(MainHandler):
         self.render('/partials/login.html', errormessage = errormessage)
 
     def check_permission(self, password, username):
-        if username == "admin" and password == "admin":
+        if username == password:
             return True
         else:
             return False
