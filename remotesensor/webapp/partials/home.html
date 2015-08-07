@@ -1,63 +1,84 @@
 <head>
     <link rel="stylesheet" type="text/css" href="/css/app.css">
+    <link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+    <script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
 </head>
 
-<nav class="navbar navbar-inverse navbar-fixed-top">
-    <div class="container-fluid">
-        <div class="navbar-header">
-            <a class="navbar-brand" href="#">Remote Sensor App</a>
+<div class="container">
+    <nav class="navbar navbar-inverse navbar-fixed-top">
+        <div class="container-fluid">
+            <div class="navbar-header">
+                <a class="navbar-brand" href="#">Remote Sensor App</a>
+            </div>
+            <div>
+                <ul class="nav navbar-nav">
+                    <li class="active"><a href="#">Home</a></li>
+                    <li class="dropdown"><a class="dropdown-toggle" data-toggle="dropdown" href="#">Sensor
+                        Management<span class="caret"></span></a>
+                        <ul class="dropdown-menu">
+                            <li><a href="../Chart.html">View Sensors</a></li>
+                            <li><a href="/partials/register_sensor.html">Manage Sensors</a></li>
+                        </ul>
+                    </li>
+                </ul>
+                <ul class="nav navbar-nav navbar-right">
+                    <li><a href="/auth/logout/"><span class="glyphicon glyphicon-log-in"></span> Logout</a>
+                    </li>
+                </ul>
+            </div>
         </div>
-        <div>
-            <ul class="nav navbar-nav">
-                <li class="active"><a href="#">Home</a></li>
-                <li class="dropdown"><a class="dropdown-toggle" data-toggle="dropdown" href="#">Sensor
-                    Management<span class="caret"></span></a>
-                    <ul class="dropdown-menu">
-                        <li><a href="#">View Sensors</a></li>
-                        <li><a href="#">Manage Sensors</a></li>
-                    </ul>
-                </li>
-            </ul>
-            <ul class="nav navbar-nav navbar-right">
-                <li><a href="/auth/logout/"><span class="glyphicon glyphicon-log-in"></span> Logout</a></li>
-            </ul>
+    </nav>
+
+    <div class="jumbotron">
+        <br/>
+
+        <h2>Registered User Landing Page</h2>
+        <br/>
+        <img src="../images/thermometer-Home-logged-in.jpg" alt=" Home Image" class="center"
+             height="500" width="350">
+        <br/>
+        <br/>
+
+        <div class="row bs-downloads">
+            <div class="col-sm-4">
+                <h3 id="register-sensor">Add a New Sensor</h3>
+
+                <p>Bought a new sensor? Add it here to monitor the temperature
+                    at the location where you have it installed.</p>
+
+                <form action="/partials/register_sensor.html" method="get">
+                    <div>
+                        <input id="register-sensor-button" class="btn btn-primary btn-lg" type="submit"
+                               value="Register Sensors">
+                    </div>
+                </form>
+            </div>
+            <div class="col-sm-4">
+                <h3 id="view-sensors">View Existing Sensors</h3>
+
+                <p>View your existing sensors and analyze temperature data collected by them.</p>
+
+                <form action="/sensor/view/">
+                    <div>
+                        <input id="view-sensor-button" class="btn btn-primary btn-lg" type="submit"
+                               value="View Sensors">
+                    </div>
+                </form>
+            </div>
+            <div class="col-sm-4">
+                <h3 id="add-user">Add a New User</h3>
+
+                <p>Add additional users to allow them to access information gathered by your temperature
+                    sensors.</p>
+
+                <form action="/partials/register_user.html" method="get">
+                    <div>
+                        <input id="register-user" class="btn btn-primary btn-lg" type="submit"
+                               value="Register New User">
+                    </div>
+                </form>
+            </div>
         </div>
-    </div>
-</nav>
-
-<div class="wrap">
-    <h2>Registered User Landing Page</h2>
-    <img ng-src="img/homepage.jpeg" alt=" Home Image" class="center" width="400px;" height="150px;">
-    <br/>
-    <br/>
-
-    <div class="sensors">
-        <div class="btn-group inline">
-            <h2>Sensor Management</h2>
-
-            <form action="/sensor/view/">
-                <div>
-                    <input id="view-sensor-button" class="btn btn-primary" type="submit"
-                           value="View Sensors">
-                </div>
-            </form>
-
-            <form action="/partials/register_sensor.html" method="get">
-                <div>
-                    <input id="register-sensor-utton" class="btn btn-primary" type="submit"
-                           value="Register Sensors">
-                </div>
-            </form>
-        </div>
-
-        <div style="display:inline-block">
-            <form action="/partials/register_user.html" method="get">
-                <div>
-                    <input id="connectButton" class="btn btn-primary" type="submit"
-                           value="Register New User">
-                </div>
-            </form>
-        </div>
-
     </div>
 </div>
