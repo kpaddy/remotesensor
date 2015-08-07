@@ -11,36 +11,25 @@
 
                 <div>
                     <label for="username">Username: </label>
-                    <input autocapitalize="off" autocorrect="off" class="text-input" id="username"
+                    <input autocapitalize="off" autocorrect="off" class="form-control" id="username"
                            name="username" tabindex="1" type="text" value="">
                 </div>
                 <br>
 
                 <div>
                     <label for="password">Password: </label>
-                    <input class="text-input" id="password" name="password" tabindex="2" type="password"
+                    <input class="form-control" id="password" name="password" tabindex="2" type="password"
                            value="">
                 </div>
 
                 <br>
 
                 <div id="form_btn">
-                    <input id="signin-btn" class="btn btn-blue" type="submit" value="Sign In" tabindex="3">
+                    <input id="signin-btn" class="btn btn-primary" type="submit" value="Sign In" tabindex="3">
                 </div>
             </form>
         </div>
         <br/>
 
-        <div class="col-xs-6">
-            <form action="/auth/twitter/" method="get">
-                <div>
-                    <input id="connectButton" class="btn btn-primary" type="submit"
-                           style="background-color:#4099FF" value="Twitter Connect">
-                </div>
-            </form>
-            <button id="signOut" type="button" class="btn btn-link" style="display:none;">Twitter Sign Out
-            </button>
-        </div>
-        <br/>
 </div>
         </div>
