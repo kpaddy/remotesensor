@@ -2,26 +2,42 @@
     <title>Remote Sensor App Landing Page</title>
     <link rel="stylesheet" type="text/css" href="/css/app.css">
 </head>
-<div class="wrap">
-    <h2>Welcome to the Remote Sensor App</h2>
-    <img ng-src="img/homepage.jpeg" alt=" Home Image" class="center" width="400px;" height="150px;">
-    <br>
 
-    <div class="col-xs-6">
-        <form action="/partials/login.html" method="get">
-            <div>
-                <input id="admin-login" class="btn btn-primary" type="submit" value="Admin Login">
+<div class="container">
+    <nav class="navbar navbar-inverse navbar-fixed-top">
+        <div class="container-fluid">
+            <div class="navbar-header">
+                <a class="navbar-brand" href="#">Remote Sensor App</a>
             </div>
-        </form>
-    </div>
+        </div>
+    </nav>
 
-    <div class="col-xs-6">
-        <form action="/auth/twitter/" method="get">
-            <div>
+    <div class="jumbotron">
 
-                <input id="connectButton" class="btn btn-primary" type="submit"
-                       style="background-color:#4099FF" value="Twitter Connect">
-            </div>
-        </form>
+        <h1>Welcome to the Remote Sensor App</h1>
+        <img src="/images/thermometer-Home.jpg" alt=" Home Image" class="center"
+             style="width: 50%; height: 50%">
+        <br>
+
+        <div class="col-xs-6">
+            <form action="/partials/login.html" method="get">
+                <div>
+                    <input id="admin-login" class="btn btn-primary btn-lg pull-left"
+                           style="background-color:#000000"
+                           type="submit" value="Registered User Login">
+                </div>
+            </form>
+        </div>
+
+        <div class="col-xs-6">
+            <form action="/auth/twitter/" method="get">
+                <div>
+
+                    <input id="connectButton" class="btn btn-twitter btn-lg pull-right" type="submit"
+                           style="background-color:#4099FF" value="Sign in with Twitter">
+                </div>
+            </form>
+        </div>
+        <br/>
     </div>
 </div>
