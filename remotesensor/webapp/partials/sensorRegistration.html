@@ -1,4 +1,38 @@
-<div id="main-container">
+<head>
+    <link rel="stylesheet" type="text/css" href="/css/app.css">
+    <link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+    <script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
+</head>
+
+<div class="container">
+    <nav class="navbar navbar-inverse navbar-fixed-top">
+        <div class="container-fluid">
+            <div class="navbar-header">
+                <a class="navbar-brand" href="#">Remote Sensor App</a>
+            </div>
+            <div>
+                <ul class="nav navbar-nav">
+                    <li class="active"><a href="../home.html"><span class="glyphicon glyphicon-home"></span>Home</a></li>
+                    <li class="dropdown"><a class="dropdown-toggle" data-toggle="dropdown" href="#">Sensor
+                        Management<span class="caret"></span></a>
+                        <ul class="dropdown-menu">
+                            <li><a href="../Chart.html">View Sensors</a></li>
+                            <li><a href="/partials/register_sensor.html">Manage Sensors</a></li>
+                        </ul>
+                    </li>
+                </ul>
+                <ul class="nav navbar-nav navbar-right">
+                    <li><a href="/auth/logout/"><span class="glyphicon glyphicon-log-out"></span> Logout</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <div class="jumbotron">
+        <br/>
+
     <div id="main">
         <h1>
             <img alt="Remote Sensor Application" src="">
@@ -33,4 +67,5 @@
         </div>
         <br/>
     </div>
+</div>
 </div>
