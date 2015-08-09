@@ -1,21 +1,49 @@
 <!DOCTYPE html>
 <html lang="en">
-
   <head>
-    <script src="/js/angular.js"></script>
-    <script src="/js/jquery-2.0.3.min.js"></script>
-    <script src="/js/highcharts.js"></script>
-    <script src="/js/ChartMain.js"></script>
-    <script src="/js/Controllers/ChartCtrl.js"></script>
-    <script src="/js/Directives/ChartDirective.js"></script>
-    <link rel="stylesheet" type="text/css" href="/css/Style.css">   
+    <script src="/ChartFiles/js/angular.js"></script>
+    <script src="/ChartFiles/js/jquery-2.0.3.min.js"></script>
+    <script src="/ChartFiles/js/highcharts.js"></script>
+    <script src="/ChartFiles/js/ChartMain.js"></script>
+    <script src="/ChartFiles/js/Controllers/ChartCtrl.js"></script>
+    <script src="/ChartFiles/js/Directives/ChartDirective.js"></script>
+    <link rel="stylesheet" type="text/css" href="/css/Style.css">
+    <link rel="stylesheet" type="text/css" href="/css/app.css">
+    <link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+    <script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
   </head>
-
   <body ng-app="app">
-    <div ng-controller="ChartCtrl"> 
+  <div class="container">
+    <nav class="navbar navbar-inverse navbar-fixed-top">
+        <div class="container-fluid">
+            <div class="navbar-header">
+                <a class="navbar-brand" href="#">Remote Sensor App</a>
+            </div>
+            <div>
+                <ul class="nav navbar-nav">
+                    <li class="active"><a href="#"><span class="glyphicon glyphicon-home"></span>Home</a></li>
+                    <li class="dropdown"><a class="dropdown-toggle" data-toggle="dropdown" href="#">Sensor
+                        Management<span class="caret"></span></a>
+                        <ul class="dropdown-menu">
+                            <li><a href="../Chart.html">View Sensors</a></li>
+                            <li><a href="/partials/register_sensor.html">Manage Sensors</a></li>
+                        </ul>
+                    </li>
+                </ul>
+                <ul class="nav navbar-nav navbar-right">
+                    <li><a href="/auth/logout/"><span class="glyphicon glyphicon-log-out"></span> Logout</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <div class="jumbotron bs-example" ng-controller="ChartCtrl">
       <div>
         <chart ng-repeat="config in configs" config="config" class="duelChart"></chart>
       </div>        
     </div>
+  </div>
   </body>
 </html>
