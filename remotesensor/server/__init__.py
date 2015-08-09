@@ -21,9 +21,13 @@ ch.setFormatter(formatter)
 logger = logging.getLogger(__name__)
 logger.addHandler(ch)
 
+APPPATH = '/home/ubuntu/apps/remotesensor'
+#APPPATH = '/python/git/remotesensornt/remotesensor/'
+
+
 define("port", default=12000, help="Run on the given port", type=int)
 mongodb_options = {
-    "host": "localhost",
+    "host": "54.85.111.126",
     "port": 27017,
     "db": "user"
 }
@@ -42,15 +46,15 @@ class Application(tornado.web.Application):
             (r"/sensor/register/", SensorRegistrationHandler),
             (r"/api", ApiHandler),
             (r'/js/(.*)', tornado.web.StaticFileHandler,
-             {'path': "/Users/nthomas/Projects/remotesensor/remotesensor/webapp/ChartFiles/js"}),
+             {'path': APPPATH + "/webapp/ChartFiles/js"}),
             (r'/css/(.*)', tornado.web.StaticFileHandler,
-              {'path': "/Users/nthomas/Projects/remotesensor/remotesensor/webapp/ChartFiles/css"}),
+              {'path': APPPATH + "/webapp/ChartFiles/css"}),
             (r"/sensor/view/", tornado.web.StaticFileHandler,
-             {'path': "/Users/nthomas/Projects/remotesensor/remotesensor/webapp/Chart.html"}),
+             {'path': APPPATH + "/webapp/Chart.html"}),
             (r"/(.*)", tornado.web.StaticFileHandler,
-             {'path': "/Users/nthomas/Projects/remotesensor/remotesensor/webapp/"}),
+             {'path': APPPATH + "/webapp/"}),
             (r"/images/(.*)", tornado.web.StaticFileHandler,
-             {'path': "/Users/nthomas/Projects/remotesensor/remotesensor/webapp/images"})
+             {'path': APPPATH + "/webapp/images"})
         ]
         settings = {
             "twitter_consumer_key": "B4LoarSuMS3Ltsex8TxBqjW8V",
@@ -79,7 +83,7 @@ class MainHandler(tornado.web.RequestHandler):
 
     def get(self):
         if not self.current_user:
-            self.redirect("/auth/login/")
+            self.redirect("/home.html")
             return
         username = self.current_user
         self.write('Hi there, ' + username)
@@ -89,24 +93,19 @@ class ApiHandler(tornado.web.RequestHandler):
     def __init__(self, application, request, **kwargs):
         tornado.web.RequestHandler.__init__(self, application, request, **kwargs)
         logger.debug('Initalizing API Handler and connecting to mongo at localhost ')
-        # self._orw = OusideReadingWriter()
-        self._orw = OusideReadingWriter(hostname='54.85.111.126')
-
+        self._orw = OusideReadingWriter()
+        self.srw = SensorReadingWriter()
+        #self._orw = OusideReadingWriter(hostname='54.85.111.126')
     def get(self):
         zipcode = self.get_argument("zipcode", None)
-        print 'inside get ', zipcode
-        if zipcode:
-            # res = []
-            #for r in self._orw.findByZip(zipcode):
-            #    res.append({'zipcode':r['zipcode'], 'name':r['name'], 'temp':r['main']['temp']})
-            #results = self._orw.findByZip(zipcode)
-            #print results
-            self.write(tornado.escape.json_encode(self._orw.findByZip(zipcode)))
-
+        print 'inside get ',zipcode
+        if zipcode :
+            outside = self._orw.findByZip(zipcode)
+            sensorr = self.srw.findBySensor(1000)  
+            self.write(tornado.escape.json_encode({'outside':outside, 'sensor':sensorr}))
         else:
             self.set_status(500)
             self.write('INVALID REQUEST')
-
     def post(self):
         self.set_status(500)
         self.write('INVALID REQUEST')
@@ -227,32 +226,21 @@ class UserRegistrationHandler(MainHandler):
             errormessage = ""
         self.render('/partials/register_user.html', errormessage = errormessage)
 
-class SensorRegistrationHandler(MainHandler):
-    def get(self):
-        try:
-            errormessage = self.get_argument("error")
-        except:
-            errormessage = ""
-        self.render('/partials/login.html', errormessage = errormessage)
-
-    def post(self):
-        return True
 
 class SensorHandler(tornado.web.RequestHandler):
     def __init__(self, application, request, **kwargs):
         tornado.web.RequestHandler.__init__(self, application, request, **kwargs)
         logger.debug('Initalizing Sensor Handler and connecting to mongo at localhost ')
         self._srw = SensorReadingWriter()
-        # self._srw = SensorReadingWriter(hostname='54.85.111.126')
-
+        #self._srw = SensorReadingWriter(hostname='54.85.111.126')
     def get(self):
         sensorid = self.get_argument("sensorid", None)
-        if sensorid:
+        if sensorid :
             self.write(tornado.escape.json_encode(self._srw.findBySensor(int(sensorid))))
         else:
             self.set_status(500)
             self.write('INVALID REQUEST')
-
+            
     def post(self):
         data_json = None
         indata = None
@@ -260,24 +248,24 @@ class SensorHandler(tornado.web.RequestHandler):
             indata = tornado.escape.utf8(self.request.body)
             data_json = json.loads(indata)
         except:
-            logger.error(traceback.format_exc() + '\ninput data is ' + indata)
+            logger.error(traceback.format_exc()+'\ninput data is ' + indata)
             self.set_status(500)
             self.write('FAILED TO PARSE INPUT DATA')
-
+            
         try:
             sensorid = data_json['id']
             t = data_json['t']
-            if t < -25.00 or t > 110.00:
+            if t < 260000 or t > 360000 :
                 self.set_status(500)
-                logger.error('Wrong temperature value => {} from sensor {} '.format(t, sensorid))
-                return self.write('Wrong temperature value =>' + str(t))
+                logger.error('Wrong temperature value => {} from sensor {} ' .format(t, sensorid))
+                return self.write('Wrong temperature value =>' +  str(t))
             self._srw.saveReading(data_json['id'], data_json['t'])
         except:
             logger.error(traceback.format_exc() + '\ninput data is ' + indata)
             self.set_status(500)
             self.write('FAILED TO SAVE')
             return
-        logger.debug("saved Temperature" + str(data_json))
+        logger.debug( "saved Temperature" + str(data_json) )
         self.write('SUCCESS')
 
 
@@ -313,7 +301,6 @@ class SensorRegistrationHandler(MainHandler):
 if __name__ == "__main__":
     parse_command_line()
     http_server = tornado.httpserver.HTTPServer(Application())
-
     http_server.listen(options.port)
-    print 'starting at port: ', options.port
+    print 'starting server at port: ', options.port
     tornado.ioloop.IOLoop.instance().start()

@@ -9,7 +9,7 @@ import json
 import urllib2
 import sys
 import time
-from datetime import datetime
+from datetime import datetime, timedelta
 
 from remotesensor.database import MongoDBWriter
 
@@ -34,8 +34,11 @@ class OusideReadingWriter(MongoDBWriter):
     def findByZip(self, zipcode):
         table = self.client[self._dbname][self._collectionname]
         print self._dbname, self._collectionname
+        ctime = datetime.now() - timedelta(days=30)
+        thirydays = time.mktime(ctime.timetuple())
         res = []
-        for row in table.find({"_id.zipcode":zipcode}).sort("dt" ): 
+        for row in table.find({ "$and" : [{"_id.zipcode":zipcode}, {"_id.dt":{"$gt": thirydays}}] }).sort("dt" ): 
+        #for row in table.find({"_id.zipcode":zipcode}).sort("dt" ): 
             res.append(row)
             #print row
         return res
@@ -75,6 +78,11 @@ while True:
         print 'going to sleep for 30 minutes'
         time.sleep(30*60)
 '''
-#dbwriter = OusideReadingWriter()
-#dbwriter.findByZip( "19426")
-#print temps
+'''
+ctime = datetime.now() - timedelta(days=30)
+print time.mktime(ctime.timetuple())
+
+dbwriter = OusideReadingWriter(hostname='54.85.111.126')
+temps = dbwriter.findByZip( "19426")
+print temps
+'''
