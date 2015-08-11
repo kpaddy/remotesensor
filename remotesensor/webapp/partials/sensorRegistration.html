@@ -1,0 +1,71 @@
+<head>
+    <link rel="stylesheet" type="text/css" href="/css/app.css">
+    <link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+    <script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
+</head>
+
+<div class="container">
+    <nav class="navbar navbar-inverse navbar-fixed-top">
+        <div class="container-fluid">
+            <div class="navbar-header">
+                <a class="navbar-brand" href="#">Wireless Temperature Monitoring App</a>
+            </div>
+            <div>
+                <ul class="nav navbar-nav">
+                    <li class="active"><a href="/partials/home.html"><span class="glyphicon glyphicon-home"></span>Home</a></li>
+                    <li class="dropdown"><a class="dropdown-toggle" data-toggle="dropdown" href="#">Sensor
+                        Management<span class="caret"></span></a>
+                        <ul class="dropdown-menu">
+                            <li><a href="/partials/view_sensors.html">View Sensors</a></li>
+                            <li><a href="/partials/register_sensor.html">Manage Sensors</a></li>
+                        </ul>
+                    </li>
+                </ul>
+                <ul class="nav navbar-nav navbar-right">
+                    <li><a href="/auth/logout/"><span class="glyphicon glyphicon-log-out"></span> Logout</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <div class="jumbotron">
+        <br/>
+
+    <div id="main">
+        <h1>
+            <img alt="Remote Sensor Application" src="">
+        </h1>
+
+        <div id="login-form">
+            <form action="/sensor/register/" method="post" id="login_form">
+                <h2>Sensor Registration</h2>
+                <div>
+                    <label for="sensorname">Sensor Name : </label>
+                    <input autocapitalize="off" autocorrect="off" class="text-input" id="sensorname"
+                           name="sensorname" tabindex="1" type="text" value="">
+                </div>
+                <br>
+
+                <div>
+                    <label for="location">Location: </label>
+                    <input class="text-input" id="location" name="location" tabindex="2" type="location"
+                           value="">
+                </div>
+
+                <br>
+                <div id="form_btn">
+                    <input id="save-sensor-btn" class="btn" type="submit" value="Register Sensor" tabindex="3">
+                </div>
+            </form>
+        </div>
+        <br/>
+
+        <div class="col-xs-6">
+            <button id="connectButton" type="button" href="/partials/home.html" class="btn btn-primary">User Homepage</button>
+        </div>
+        <br/>
+    </div>
+</div>
+</div>

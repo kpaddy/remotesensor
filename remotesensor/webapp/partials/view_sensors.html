@@ -1,19 +1,10 @@
-<!DOCTYPE html>
-<html lang="en">
-  <head>
-    <script src="/ChartFiles/js/angular.js"></script>
-    <script src="/ChartFiles/js/jquery-2.0.3.min.js"></script>
-    <script src="/ChartFiles/js/highcharts.js"></script>
-    <script src="/ChartFiles/js/ChartMain.js"></script>
-    <script src="/ChartFiles/js/Controllers/ChartCtrl.js"></script>
-    <script src="/ChartFiles/js/Directives/ChartDirective.js"></script>
-    <link rel="stylesheet" type="text/css" href="/css/Style.css">
+<head>
     <link rel="stylesheet" type="text/css" href="/css/app.css">
     <link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
     <script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
-  </head>
-  <body ng-app="app">
+</head>
+
 <div class="container">
     <nav class="navbar navbar-inverse navbar-fixed-top">
         <div class="container-fluid">
@@ -40,11 +31,28 @@
         </div>
     </nav>
 
-    <div class="jumbotron bs-example" ng-controller="ChartCtrl">
-      <div>
-        <chart ng-repeat="config in configs" config="config" class="duelChart"></chart>
-      </div>        
+    <div class="jumbotron">
+        <br/>
+
+        <h2>Connected Wireless Temperature Monitor's</h2>
+        <br/>
+
+        <div class="row">
+            <div class="col-sm-6 col-md-4">
+                <div class="thumbnail">
+                    <img src="../images/thermometer-Lobby.jpg" alt="Lobby">
+
+                    <div class="caption">
+                        <h3>Lobby Temperature Monitor</h3>
+
+                        <p>Location: 19426</p>
+
+                        <p>
+                            <a href="../Chart.html" class="btn btn-primary" role="button">View Chart</a>
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
-  </div>
-  </body>
-</html>
+</div>

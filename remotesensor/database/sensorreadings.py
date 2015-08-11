@@ -3,11 +3,12 @@ Created on May 26, 2015
 
 @author: PaddyK
 '''
-from datetime import datetime
+from datetime import datetime, timedelta
+import random
+import time
 
 from remotesensor.database import MongoDBWriter
 from remotesensor.sensors import Sensor
-
 
 class SensorManagement(MongoDBWriter):
     def __init__(self, dbname='sensors', collectionname='sensors', hostname='localhost'):
@@ -32,8 +33,10 @@ class SensorManagement(MongoDBWriter):
             
     def findByCustomer(self, customerId):
         table = self.client[self._dbname][self._collectionname]
+        rows = []
         for row in table.find({"customerId":customerId}).sort("dt" ): 
-            print row
+            rows.append(row)
+        return rows
         
 class SensorReadingWriter(MongoDBWriter):
     
@@ -47,6 +50,15 @@ class SensorReadingWriter(MongoDBWriter):
         table = self.client[self._dbname][self._collectionname]
         for row in table.find(): 
             print row
+    def roundTime(self, dt=None, dateDelta=timedelta(minutes=1)):
+
+        roundTo = dateDelta.total_seconds()
+
+        if dt == None : dt = datetime.now()
+        seconds = (dt - dt.min).seconds
+        # // is a floor division, not a comment on following line:
+        rounding = (seconds+roundTo/2) // roundTo * roundTo
+        return dt + timedelta(0,rounding-seconds,-dt.microsecond)
         
     '''
         Retreives temperature readings for a given sensor
@@ -54,10 +66,18 @@ class SensorReadingWriter(MongoDBWriter):
     def findBySensor(self, sensorid):
         table = self.client[self._dbname][self._collectionname]
         docs = []
-        for row in table.find({"sensorid":sensorid}).sort("createdTime" ).limit(100): 
-            row['createdTime'] = row['createdTime'].strftime('%Y-%m-%dT%H:%M:%SZ')
+        ctime = datetime.now() - timedelta(days=2)
+        thirydays = time.mktime(ctime.timetuple())
+        #for row in table.find({ "$and" : [{"sensorid":sensorid}, {"createdTime":{"$gt": thirydays}}] }).sort("createdTime" ): 
+        for row in table.find({"sensorid":sensorid}).sort("createdTime" ): 
+            #round the minutes to quarter
+            rtime = self.roundTime(row['createdTime'], timedelta(minutes=15))
+            #row['createdTime'] = time.mktime(row['createdTime'].timetuple()) 
+            row['createdTime'] = time.mktime(rtime.timetuple())
             row['_id'] =  str(row['_id'])
+            row['temperature'] = (row['temperature'] / 10000) * (9.0/5.0) + 32.0
             docs.append(row)
+            #print row
         return docs
 
     
@@ -76,7 +96,6 @@ if __name__ == '__main__':
     #sw.saveToDb(records)
     #sw.findAll()
     sw.findBySensor(1231)
-    '''
     s = Sensor()
     s.id = 11112
     s.customerId = 22222
@@ -91,4 +110,6 @@ if __name__ == '__main__':
     #sm.findByCustomer(22222)
     srw = SensorReadingWriter(hostname='54.85.111.126')
     #srw.saveReading(11112, 88.22 )
-    print srw.findBySensor(123122)
+    print srw.findBySensor(1000)
+    '''
+    pass

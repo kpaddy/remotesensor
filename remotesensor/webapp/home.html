@@ -1,0 +1,89 @@
+<head>
+    <link rel="stylesheet" type="text/css" href="/css/app.css">
+    <link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.4.0/css/font-awesome.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+    <script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
+</head>
+
+<div class="container">
+    <nav class="navbar navbar-inverse navbar-fixed-top">
+        <div class="container-fluid">
+            <div class="navbar-header">
+                <a class="navbar-brand" href="#">Wireless Temperature Monitoring App</a>
+            </div>
+        </div>
+    </nav>
+
+    <div class="jumbotron">
+
+        <h1>Wireless Temperature Monitoring</h1>
+        <br/>
+        <img src="/images/thermometer-Home.jpg" alt=" Home Image" class="center"
+             height="350" width="500">
+
+        <div class='row' style='text-align:center'>
+            <div class='col-sm-12'>
+                <p class='header'>How it Works</p>
+
+                <p class='sub-header'>Sign up.</p>
+
+                <p class='sub-header'>Register and configure your temperature monitoring units.</p>
+
+                <p class='sub-header'>Use the webapp to monitor and analyze temperature fluctuations.</p>
+            </div>
+        </div>
+        <div class='row' style='text-align:center'>
+            <div class='col-sm-12'>
+                <p class='header'>Benefits?</p>
+
+                <div class='row'>
+                    <div class='col-sm-4'>
+                        <p class='sub-header'>Multiple Locations</p>
+
+                        <div class='point'>
+                            <p>Monitor and compare temperature changes in different locations.</p>
+                        </div>
+                    </div>
+                    <div class='col-sm-4'>
+                        <p class='sub-header'>Internal vs External</p>
+
+                        <div class='point'>
+                            <p>Charts overlay observed temperature on the external temperature.</p>
+                        </div>
+                    </div>
+                    <div class='col-sm-4'>
+                        <p class='sub-header'>30-day Intervals</p>
+
+                        <div class='point'>
+                            <p>Charts display data collected over a 30-day period.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <br/>
+        <br/>
+        <br/>
+        <div class="col-xs-6">
+            <form action="/partials/login.html" method="get">
+                <div>
+                    <input id="admin-login" class="btn btn-primary btn-lg pull-left"
+                           style="background-color:#000000"
+                           type="submit" value="Registered User Login">
+                </div>
+            </form>
+        </div>
+
+        <div class="col-xs-6">
+            <form action="/auth/twitter/" method="get">
+                <div>
+                    <a href="/auth/twitter/" class="btn-lg btn-social btn-twitter pull-right">
+                        <i class="fa fa-twitter"></i> Sign in with Twitter
+                    </a>
+                </div>
+            </form>
+        </div>
+        <br/>
+    </div>
+</div>

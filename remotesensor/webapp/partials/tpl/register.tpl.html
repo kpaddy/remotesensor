@@ -1,0 +1,21 @@
+<div class="bs-example">
+<form role="form" name="form1">
+  <div class="form-group">
+    <h2>Create An Account</h2>
+    <br/>
+    <label for="exampleInputEmail1">username</label>
+    <input type="text" placeholder="username"  class="form-control" ng-model="user.mail" required>
+  </div>
+  <div class="form-group">
+    <label for="exampleInputPassword1">password</label>
+    <input type="password" placeholder="password" id="exampleInputPassword1" class="form-control" ng-model="user.pass" required>
+  </div>
+  <div class="form-group">
+    <label for="exampleInputPassword2">re-enter password</label>
+    <input type="password" placeholder="password" id="exampleInputPassword2" class="form-control" required>
+  </div>
+  <button class="btn btn-default" type="submit" ng-click="login(user)" ng-disabled="form1.$invalid">Submit</button>
+  <p>{{msgtxt}}</p>
+  <br/>
+</form>
+</div>

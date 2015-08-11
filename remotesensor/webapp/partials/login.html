@@ -1,0 +1,54 @@
+<head>
+    <link rel="stylesheet" type="text/css" href="/css/app.css">
+    <link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+    <script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
+</head>
+
+<div class="container">
+    <nav class="navbar navbar-inverse navbar-fixed-top">
+        <div class="container-fluid">
+            <div class="navbar-header">
+                <a class="navbar-brand" href="#">Wireless Temperature Monitoring App</a>
+            </div>
+            <div>
+                <ul class="nav navbar-nav">
+                    <li class="active"><a href="../home.html"><span class="glyphicon glyphicon-home"></span>Home</a></li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <div id="main-container" class="jumbotron bs-example">
+        <div id="login-form" class="form-signin">
+            <form role="form" action="/auth/login/" method="post" id="login_form" class="form-signin">
+                <h2 class="form-signin-heading">Sign in to access your account</h2>
+                <span class="errormessage"></span>
+                <br/>
+
+                <div>
+                    <br/>
+                    <label for="username">Username: </label>
+                    <input autocapitalize="off" autocorrect="off" class="form-control" id="username"
+                           name="username" tabindex="1" type="text" value=""
+                           placeholder="enter your username" required autofocus>
+                </div>
+                <br>
+
+                <div>
+                    <label for="password">Password: </label>
+                    <input class="form-control" id="password" name="password" tabindex="2" type="password"
+                           value="" placeholder="password" required>
+                </div>
+
+                <br>
+
+                <div id="form_btn">
+                    <input id="signin-btn" class="btn btn-primary btn-lg" type="submit" value="Sign In" tabindex="3">
+                </div>
+            </form>
+        </div>
+        <br/>
+
+    </div>
+</div>
