@@ -13,11 +13,12 @@
             </div>
             <div>
                 <ul class="nav navbar-nav">
-                    <li class="active"><a href="/partials/home.html"><span class="glyphicon glyphicon-home"></span>Home</a></li>
+                    <li class="active"><a href="/partials/home.html"><span
+                            class="glyphicon glyphicon-home"></span>Home</a></li>
                     <li class="dropdown"><a class="dropdown-toggle" data-toggle="dropdown" href="#">Sensor
                         Management<span class="caret"></span></a>
                         <ul class="dropdown-menu">
-                            <li><a href="../Chart.html">View Sensors</a></li>
+                            <li><a href="/partials/view_sensors.html">View Sensors</a></li>
                             <li><a href="/partials/register_sensor.html">Manage Sensors</a></li>
                         </ul>
                     </li>
@@ -33,22 +34,25 @@
     <div class="jumbotron">
         <br/>
 
-        <h2>Your Wireless Temperature Monitor's</h2>
+        <h2>Connected Wireless Temperature Monitor's</h2>
         <br/>
-        <ul>
-          {% for sensor in sensors %}
-            {% block sensor %}
-              <li>{{ escape(sensor.name) }}</li>
-                <li>{{ escape(sensor.location) }}</li>
-            {% end %}
-          {% end %}
-        </ul>
 
-        <br/>
-        <ul class="nav nav-tabs">
-            <li role="presentation" class="active"><a href="#">Home</a></li>
-            <li role="presentation"><a href="#">Profile</a></li>
-            <li role="presentation"><a href="#">Messages</a></li>
-        </ul>
+        <div class="row">
+            <div class="col-sm-6 col-md-4">
+                <div class="thumbnail">
+                    <img src="../images/thermometer-Lobby.jpg" alt="Lobby">
+
+                    <div class="caption">
+                        <h3>Lobby Temperature Monitor</h3>
+
+                        <p>Location: 19426</p>
+
+                        <p>
+                            <a href="../Chart.html" class="btn btn-primary" role="button">View Chart</a>
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
 </div>
