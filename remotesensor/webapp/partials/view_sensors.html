@@ -13,7 +13,8 @@
             </div>
             <div>
                 <ul class="nav navbar-nav">
-                    <li class="active"><a href="/partials/home.html"><span class="glyphicon glyphicon-home"></span>Home</a></li>
+                    <li class="active"><a href="/partials/home.html"><span
+                            class="glyphicon glyphicon-home"></span>Home</a></li>
                     <li class="dropdown"><a class="dropdown-toggle" data-toggle="dropdown" href="#">Sensor
                         Management<span class="caret"></span></a>
                         <ul class="dropdown-menu">
@@ -30,37 +31,28 @@
         </div>
     </nav>
 
-    <div class="jumbotron bs-example">
+    <div class="jumbotron">
         <br/>
 
-        <h2>Sensor Registration</h2>
+        <h2>Connected Wireless Temperature Monitor's</h2>
+        <br/>
 
-        <div id="sensor-form" class="form-signin">
-            <form action="/sensor/register/" method="post" id="register_sensor_form">
-                <span class="errormessage"></span>
+        <div class="row">
+            <div class="col-sm-6 col-md-4">
+                <div class="thumbnail">
+                    <img src="../images/thermometer-Lobby.jpg" alt="Lobby">
 
-                <div>
-                    <br/>
-                    <label for="sensor_name">Sensor Name: </label>
-                    <input autocapitalize="off" class="form-control" autocorrect="off" id="sensor_name"
-                           name="sensor_name" tabindex="1" type="text" value=""
-                           placeholder="enter a name for your sensor" required autofocus>
+                    <div class="caption">
+                        <h3>Lobby Temperature Monitor</h3>
+
+                        <p>Location: 19426</p>
+
+                        <p>
+                            <a href="../Chart.html" class="btn btn-primary" role="button">View Chart</a>
+                        </p>
+                    </div>
                 </div>
-                <br>
-
-                <div>
-                    <label for="location">Location: </label>
-                    <input id="location" class="form-control" name="location" tabindex="2" type="text"
-                           value="" placeholder="zipcode" required>
-                </div>
-
-                <br>
-
-                <div id="form_btn">
-                    <input id="register-sensor-btn" class="btn btn-primary btn-lg" type="submit" value="Add Sensor"
-                           tabindex="3">
-                </div>
-            </form>
+            </div>
         </div>
     </div>
 </div>

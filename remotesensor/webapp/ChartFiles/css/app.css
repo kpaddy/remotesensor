@@ -50,6 +50,24 @@ img.center {
     display: inline-block;
 }
 
+.header {
+    font-size: 4em !important;;
+    color: #000000;
+    font-weight: bold !important;
+    padding: 50px 0 10px;
+}
+
+.sub-header {
+    font-size: 2em !important;
+    color: #888;
+}
+
+.point {
+    font-size: 1.5em !important;
+    color: #666 !important;
+    padding: 10px;
+}
+
 /*!
  * Bootstrap v3.1.0 (http://getbootstrap.com)
  * Copyright 2011-2014 Twitter, Inc.
