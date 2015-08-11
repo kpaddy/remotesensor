@@ -10,7 +10,9 @@ REQUEST_TOKEN_URL = 'https://api.twitter.com/oauth/request_token'
 ACCESS_TOKEN_URL  = 'https://api.twitter.com/oauth/access_token'
 AUTHORIZATION_URL = 'https://api.twitter.com/oauth/authorize'
 SIGNIN_URL        = 'https://api.twitter.com/oauth/authenticate'
-
+'''
+A utility class used for Twitter OAuth. 
+'''
 def get_twitter_api(token, secret, settings):
     consumer_key = settings['twitter_consumer_key']
     consumer_secret = settings['twitter_consumer_secret']

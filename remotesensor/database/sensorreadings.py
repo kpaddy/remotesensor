@@ -32,8 +32,10 @@ class SensorManagement(MongoDBWriter):
             
     def findByCustomer(self, customerId):
         table = self.client[self._dbname][self._collectionname]
+        rows = []
         for row in table.find({"customerId":customerId}).sort("dt" ): 
-            print row
+            rows.append(row)
+        return rows
         
 class SensorReadingWriter(MongoDBWriter):
     
@@ -78,7 +80,6 @@ if __name__ == '__main__':
     #sw.saveToDb(records)
     #sw.findAll()
     sw.findBySensor(1231)
-    '''
     s = Sensor()
     s.id = 11112
     s.customerId = 22222
@@ -94,3 +95,5 @@ if __name__ == '__main__':
     srw = SensorReadingWriter(hostname='54.85.111.126')
     #srw.saveReading(11112, 88.22 )
     print srw.findBySensor(1000)
+    '''
+    pass

@@ -27,7 +27,7 @@ class OusideReadingWriter(MongoDBWriter):
         table = self.client[self._dbname][self._collectionname]
         for row in table.find(): 
             print row
-
+        return table.find()
     '''
         Retreives temperature readings for a given zipcode
     '''
@@ -40,7 +40,6 @@ class OusideReadingWriter(MongoDBWriter):
         for row in table.find({ "$and" : [{"_id.zipcode":zipcode}, {"_id.dt":{"$gt": thirydays}}] }).sort("dt" ): 
         #for row in table.find({"_id.zipcode":zipcode}).sort("dt" ): 
             res.append(row)
-            #print row
         return res
 
 newrecords = [{'zipcode':'19426', 'timestamp':'', 'temperature':94.33 }, 

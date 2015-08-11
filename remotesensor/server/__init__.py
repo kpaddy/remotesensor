@@ -26,12 +26,11 @@ APPPATH = '/home/ubuntu/apps/remotesensor'
 
 
 define("port", default=12000, help="Run on the given port", type=int)
-mongodb_options = {
-    "host": "54.85.111.126",
-    "port": 27017,
-    "db": "user"
-}
 
+'''
+    A tornado Applicaton Router that routes incomming http requests to it's
+    appropriate Tornado Handlers.
+'''
 class Application(tornado.web.Application):
     # This portion of the application gets used to startup the settings,
     # this is part of the settings, and configurations
@@ -76,7 +75,9 @@ class Application(tornado.web.Application):
         self.db = self.con["user"]
         assert self.db.connection==self.con '''
 
-
+'''
+    The Default Tornado Handler 
+'''
 class MainHandler(tornado.web.RequestHandler):
     def get_current_user(self):
         return self.get_secure_cookie("user")
@@ -88,14 +89,16 @@ class MainHandler(tornado.web.RequestHandler):
         username = self.current_user
         self.write('Hi there, ' + username)
 
-
+'''
+    This Tornado Handler handles all data API calls that are requested from the 
+    Charts page. 
+'''
 class ApiHandler(tornado.web.RequestHandler):
     def __init__(self, application, request, **kwargs):
         tornado.web.RequestHandler.__init__(self, application, request, **kwargs)
         logger.debug('Initalizing API Handler and connecting to mongo at localhost ')
         self._orw = OusideReadingWriter()
         self.srw = SensorReadingWriter()
-        #self._orw = OusideReadingWriter(hostname='54.85.111.126')
     def get(self):
         zipcode = self.get_argument("zipcode", None)
         print 'inside get ',zipcode
@@ -110,7 +113,9 @@ class ApiHandler(tornado.web.RequestHandler):
         self.set_status(500)
         self.write('INVALID REQUEST')
 
-
+'''
+    A tornado Handler to handle Logins. 
+'''
 class LoginHandler(MainHandler):
     def post(self):
         username = self.get_argument("username", "")
@@ -143,6 +148,9 @@ class LoginHandler(MainHandler):
         else:
             self.clear_cookie("user")
 
+'''
+    This Tornado Handler handles all web requests related to Twitter OAuth.
+'''
 class TwitterLoginHandler(tornado.web.RequestHandler,
                           tornado.auth.TwitterMixin):
     """Handling Twitter authentication for the remote sensor app"""
@@ -199,7 +207,9 @@ class LogoutHandler(MainHandler):
         self.clear_cookie("access_token_secret")
         self.redirect("/home.html")
 
-
+'''
+    A Tornado Handler to handle all web requests related to User Registration. 
+'''
 class UserRegistrationHandler(MainHandler):
     def post(self):
         screen_name = self.get_argument("screen_name", "")
@@ -227,12 +237,15 @@ class UserRegistrationHandler(MainHandler):
         self.render('/partials/register_user.html', errormessage = errormessage)
 
 
+'''
+    A Tornodao Handler class that is used to save Sensor Readings. This api 
+    is called directly from the ESP8266 Wifi Module. 
+'''
 class SensorHandler(tornado.web.RequestHandler):
     def __init__(self, application, request, **kwargs):
         tornado.web.RequestHandler.__init__(self, application, request, **kwargs)
         logger.debug('Initalizing Sensor Handler and connecting to mongo at localhost ')
         self._srw = SensorReadingWriter()
-        #self._srw = SensorReadingWriter(hostname='54.85.111.126')
     def get(self):
         sensorid = self.get_argument("sensorid", None)
         if sensorid :
@@ -251,11 +264,10 @@ class SensorHandler(tornado.web.RequestHandler):
             logger.error(traceback.format_exc()+'\ninput data is ' + indata)
             self.set_status(500)
             self.write('FAILED TO PARSE INPUT DATA')
-            
         try:
             sensorid = data_json['id']
             t = data_json['t']
-            if t < 260000 or t > 360000 :
+            if t < 200000 or t > 360000 :
                 self.set_status(500)
                 logger.error('Wrong temperature value => {} from sensor {} ' .format(t, sensorid))
                 return self.write('Wrong temperature value =>' +  str(t))
@@ -268,13 +280,17 @@ class SensorHandler(tornado.web.RequestHandler):
         logger.debug( "saved Temperature" + str(data_json) )
         self.write('SUCCESS')
 
-
+'''
+    A Tornodao Handler class that is used to handle are request to register a Sensor. 
+'''
 class SensorRegistrationHandler(MainHandler):
+    '''
+        This method throws an error if the sensor already exists. Other wise creates a new record. 
+    '''
     def post(self):
         name = self.get_argument("sensor_name", "")
         zipcode = self.get_argument("location", "")
         client = pymongo.MongoClient('localhost', 27017)
-
         sensor_db = client.sensor
         sensor_collection = sensor_db.sensor
         if sensor_collection.find_one({"name": name, "zipcode": zipcode}):
@@ -297,7 +313,9 @@ class SensorRegistrationHandler(MainHandler):
             errormessage = ""
         self.render('/partials/register_user.html', errormessage = errormessage)
 
-
+'''
+    This is the main code to run our application as a Web Server.
+'''
 if __name__ == "__main__":
     parse_command_line()
     http_server = tornado.httpserver.HTTPServer(Application())
