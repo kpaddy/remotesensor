@@ -21,8 +21,8 @@ ch.setFormatter(formatter)
 logger = logging.getLogger(__name__)
 logger.addHandler(ch)
 
-APPPATH = '/home/ubuntu/apps/remotesensor'
-#APPPATH = '/python/git/remotesensornt/remotesensor/'
+#APPPATH = '/home/ubuntu/apps/remotesensor'
+APPPATH = '/python/git/remotesensornt/remotesensor/'
 
 
 define("port", default=12000, help="Run on the given port", type=int)
@@ -97,15 +97,32 @@ class ApiHandler(tornado.web.RequestHandler):
     def __init__(self, application, request, **kwargs):
         tornado.web.RequestHandler.__init__(self, application, request, **kwargs)
         logger.debug('Initalizing API Handler and connecting to mongo at localhost ')
-        self._orw = OusideReadingWriter()
-        self.srw = SensorReadingWriter()
+        self._orw = OusideReadingWriter(hostname='54.85.111.126')
+        self.srw = SensorReadingWriter(hostname='54.85.111.126')
     def get(self):
         zipcode = self.get_argument("zipcode", None)
         print 'inside get ',zipcode
         if zipcode :
             outside = self._orw.findByZip(zipcode)
             sensorr = self.srw.findBySensor(1000)  
-            self.write(tornado.escape.json_encode({'outside':outside, 'sensor':sensorr}))
+            sensorDt = {}
+            for r in sensorr:
+                sensorDt[r['createdTime']] = r['temperature'] 
+            
+            outDt = {}
+            for r in outside:
+                outDt[r['_id']['dt']] = r['main']['temp']
+            retdocs = []
+            prev = 0.0
+            for k,v in sensorDt.iteritems():
+                otemp = outDt.get(k, 0.0)
+                if otemp != 0.0:
+                    prev = otemp
+                else:
+                    otemp = prev
+                newDt = {'dt':k, 'name':'Evansburg', 'otemp':otemp, 'stemp':v}
+                retdocs.append(newDt)
+            self.write(tornado.escape.json_encode(retdocs))
         else:
             self.set_status(500)
             self.write('INVALID REQUEST')
@@ -290,7 +307,7 @@ class SensorRegistrationHandler(MainHandler):
     def post(self):
         name = self.get_argument("sensor_name", "")
         zipcode = self.get_argument("location", "")
-        client = pymongo.MongoClient('localhost', 27017)
+        client = pymongo.MongoClient('54.85.111.126', 27017)
         sensor_db = client.sensor
         sensor_collection = sensor_db.sensor
         if sensor_collection.find_one({"name": name, "zipcode": zipcode}):

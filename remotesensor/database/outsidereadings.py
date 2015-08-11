@@ -28,18 +28,35 @@ class OusideReadingWriter(MongoDBWriter):
         for row in table.find(): 
             print row
         return table.find()
+    def roundTime(self, dt=None, dateDelta=timedelta(minutes=1)):
+
+        roundTo = dateDelta.total_seconds()
+
+        if dt == None : dt = datetime.now()
+        seconds = (dt - dt.min).seconds
+        # // is a floor division, not a comment on following line:
+        rounding = (seconds+roundTo/2) // roundTo * roundTo
+        return dt + timedelta(0,rounding-seconds,-dt.microsecond)
+    
     '''
         Retreives temperature readings for a given zipcode
     '''
     def findByZip(self, zipcode):
         table = self.client[self._dbname][self._collectionname]
         print self._dbname, self._collectionname
-        ctime = datetime.now() - timedelta(days=30)
+        ctime = datetime.now() - timedelta(days=3)
         thirydays = time.mktime(ctime.timetuple())
         res = []
         for row in table.find({ "$and" : [{"_id.zipcode":zipcode}, {"_id.dt":{"$gt": thirydays}}] }).sort("dt" ): 
         #for row in table.find({"_id.zipcode":zipcode}).sort("dt" ): 
-            res.append(row)
+            ntime = datetime.fromtimestamp(row['_id']['dt'])
+            #print row['_id']['dt'], ntime
+            rtime = self.roundTime(ntime, timedelta(minutes=15))
+            #print rtime
+            row['_id']['dt'] = time.mktime(rtime.timetuple())
+            r = {'main':row['main'], 'name':row['name'], 'zipcode':row['zipcode'], '_id':row['_id']}
+            res.append(r)
+            #print row
         return res
 
 newrecords = [{'zipcode':'19426', 'timestamp':'', 'temperature':94.33 }, 
